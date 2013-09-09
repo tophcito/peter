@@ -1,0 +1,12 @@
+bibentry("Manual",
+            title = "peter: Public transport nETwork simulation Environment for R",
+            author = person(given="Christoph",
+                last="Waldhauser",
+                email="chw@kdss.at",
+                role=list("aut", "cre")),
+            organization = "KDSS K Data Science Solutions",
+            address      = "Vienna, Austria",
+            year   = 2013,
+            url    = "https://github.com/tophcito/peter",
+            mheader = "To cite peter in publications use:",
+         )

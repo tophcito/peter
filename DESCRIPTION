@@ -1,0 +1,13 @@
+Package: peter
+Title: PETER - Public transport nETwork simulation Environment for R
+Description: The peter package provides a modular interface for
+accessing public transport real-time data and simulate the underlying
+network's characteristics. 
+Version: 0.1.0
+Authors@R: person(given="Christoph", 
+	   	  last="Waldhauser", 
+		  email="chw@kdss.at", 
+		  role=list("aut", "cre"))
+Depends: R (>= 3.0.1)
+License: GPL (>= 3)
+LazyData: true
