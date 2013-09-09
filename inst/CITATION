@@ -1,7 +1,7 @@
 bibentry("Manual",
             title = "peter: Public transport nETwork simulation Environment for R",
             author = person(given="Christoph",
-                last="Waldhauser",
+                family="Waldhauser",
                 email="chw@kdss.at",
                 role=list("aut", "cre")),
             organization = "KDSS K Data Science Solutions",
