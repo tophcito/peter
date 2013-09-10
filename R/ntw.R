@@ -21,11 +21,14 @@ is.ntw <- function(x) inherits(x, "ntw")
 ##' 
 ##' @param ntw a network specification, typically a list containing three 
 ##'   elements: stations, lines, platforms.
-##' @param toASCII if \code{TRUE}, station and city names will be converted to ASCII.
+##' @param toASCII if \code{TRUE}, station and city names will be converted to 
+##'   ASCII.
+##' @param key a optional API key, to store together with the network meta data.
+##'   See \code{\link{setAPIkey}}.
 ##' @return A class \code{ntw} object.
 ##' @rdname is.ntw
 ##' @export
-as.ntw <- function(ntw, toASCII=FALSE) {
+as.ntw <- function(ntw, toASCII=FALSE, key=NULL) {
   res <- merge(x=merge(x=ntw$platforms,
                        y=ntw$stations,
                        by.x="FK_HALTESTELLEN_ID",
@@ -50,6 +53,7 @@ as.ntw <- function(ntw, toASCII=FALSE) {
   }
   res[,"Name.s"] <- name.stations
   res[,"City"] <- name.cities
+  attr(res, "key") <- NULL
   class(res) <- c("ntw", "data.frame")
   return(res)
 }
@@ -60,8 +64,8 @@ as.ntw <- function(ntw, toASCII=FALSE) {
 ##' @param object the \code{ntw} network object to be summarized
 ##' @param ... arguments passed to other methods. Currently ignored.
 ##' @return A named list with the number of lines, stations, platforms, the
-##'   transport types offered and the extent of the network coverage in terms of
-##'   longitude and latitude.
+##'   transport types offered, the extent of the network coverage in terms of
+##'   longitude and latitude and the API key associated with it.
 ##' @S3method summary ntw
 ##' @method summary ntw
 summary.ntw <- function(object, ...) {
@@ -71,12 +75,14 @@ summary.ntw <- function(object, ...) {
   transportTypes <- levels(object$Type)
   rng.lon <- range(c(object$Lon.s, object$Lon.p), na.rm=TRUE)
   rng.lat <- range(c(object$Lat.s, object$Lat.p), na.rm=TRUE)
+  api.key <- attr(object, "key")
   res <- list(numLines=numLines,
               numStation=numStation,
               numPlatform=numPlatform,
               transportTypes=transportTypes,
               rng.lon=rng.lon,
-              rng.lat=rng.lat)
+              rng.lat=rng.lat,
+              api.key=api.key)
   class(res) <- c("summary.ntw")
   return(res)
 }
@@ -96,6 +102,7 @@ print.summary.ntw <- function(x, ...) {
   message("Geographical coverage:")
   message(paste("  Longitude: From", x$rng.lon[1], "to", x$rng.lon[2]))
   message(paste("  Lattitude: From", x$rng.lat[1], "to", x$rng.lat[2]))
+  message(paste("API Key:", x$api.key))
   invisible(x)  
 }
 
@@ -116,4 +123,24 @@ plot.ntw <- function(x, y, ..., wrap=TRUE) {
     geom_point() + labs(x="Longitude", y="Latitude")
   if (wrap) pl <- pl + facet_wrap(facets=~Type, scales="free")
   print(pl)
+}
+
+##' Set and test for API key
+##' 
+##' Most public transport data queries require an API key. These functions set
+##' such a key and test for it.
+##' @param ntw class \code{ntw} public transport network object
+##' @param key the API key
+##' @return For \code{setAPIkey}, the \code{ntw} object, with the API key added.
+##' @export
+setAPIkey <- function(ntw, key) {
+  attr(ntw, "key") <- key
+  return(ntw)
+}
+
+##' @rdname setAPIkey
+##' @return For \code{hasAPIkey}, \code{TRUE} if an API key is defined for a
+##'   network, \code{FALSE} otherwise.
+hasAPIkey <- function(ntw) {
+  return(!is.null(attr(ntw, "key")))
 }

@@ -5,7 +5,7 @@
 \usage{
   is.ntw(x)
 
-  as.ntw(ntw, toASCII = FALSE)
+  as.ntw(ntw, toASCII = FALSE, key = NULL)
 }
 \arguments{
   \item{x}{object to be tested}
@@ -15,6 +15,9 @@
 
   \item{toASCII}{if \code{TRUE}, station and city names
   will be converted to ASCII.}
+
+  \item{key}{a optional API key, to store together with the
+  network meta data.  See \code{\link{setAPIkey}}.}
 }
 \value{
   Returns \code{TRUE} if the tested object is a traffic

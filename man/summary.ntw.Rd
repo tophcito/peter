@@ -18,8 +18,9 @@
 }
 \value{
   A named list with the number of lines, stations,
-  platforms, the transport types offered and the extent of
-  the network coverage in terms of longitude and latitude.
+  platforms, the transport types offered, the extent of the
+  network coverage in terms of longitude and latitude and
+  the API key associated with it.
 
   Invisibly returns the summary object.
 }

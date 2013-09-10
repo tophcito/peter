@@ -20,3 +20,5 @@ Collate:
     'vie-getNetwork.R'
     'ntw.R'
     'vie.R'
+    'lines.R'
+    'stations.R'
