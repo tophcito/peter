@@ -1,4 +1,4 @@
-##' Extract all Lines serving a Station
+##' Extract all lines serving a Station
 ##' 
 ##' This function returns all lines that serve a station.
 ##' @param ntw class \code{ntw} public transport network object
@@ -42,5 +42,22 @@ findStation <- function(station, ntw, ret=c("ID", "Name")) {
   }
   if (ret=="ID") res <- res
   if (ret=="Name") res <- as.character(ntw[ntw[,"StationID"]==res,"Name.s"][[1]])
+  return(res)
+}
+
+##' Station and Line's RBL Code
+##' 
+##' RBL codes identify locations that vehicles reach. They are unique for any 
+##' given station, line and direction. This function looks it up in the meta
+##' data table.
+##' @param station \code{numeric} StationID
+##' @param line \code{numeric} LineID
+##' @param direction either \code{R} or \code{H}
+##' @param ntw a class \code{ntw} public transport network
+##' @return The RBL code for the station, line, and direction specification.
+##' @export
+findRBL <- function(station, line, direction=c("H", "R"), ntw) {
+  direction <- match.arg(direction)
+  res <- ntw[ntw[,"StationID"]==station & ntw[,"LineID"]==line & ntw[,"Direction"]==direction, "RBL"]
   return(res)
 }

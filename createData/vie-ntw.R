@@ -1,4 +1,6 @@
 library(peter)
 vie.lis <- getNetwork.vie()
 vie <- as.ntw(vie.lis, toASCII=TRUE)
-save(file="./data/vie.RData", vie)
+vie.gr <- makeGraph(vie)
+vie <- addGraph(vie, vie.gr)
+save(file="./data/vie.RData", vie, compress="xz")

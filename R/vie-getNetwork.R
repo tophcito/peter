@@ -43,13 +43,13 @@
 ##'   than \code{stations}. Essentially, this table links \code{lines} and 
 ##'   \code{stations} together.
 ##'   
-##'   \tabular{ll}{ Steig_ID \tab Platform ID (key) \cr FK_LINIEN_ID \tab Line
-##'   ID (key) \cr FK_HALTESTELLEN_ID \tab Station ID (key) \cr RICHTUNG \tab
+##'   \tabular{ll}{ Steig_ID \tab Platform ID (key) \cr FK_LINIEN_ID \tab Line 
+##'   ID (key) \cr FK_HALTESTELLEN_ID \tab Station ID (key) \cr RICHTUNG \tab 
 ##'   Direction of ordering \cr REIHENFOLGE \tab Ordering withing direction\cr 
-##'   RBL_NUMMER \tab Internal numeric code \cr BEREICH \tab Platform area \cr 
-##'   STEIG \tab Name of Platform (internal) \cr STEIG_WGS84_LAT \tab Latitude
-##'   of platform location \cr STEIG_WGS84_LON \tab Longitude of platform
-##'   location \cr STAND \tab Date of data export}
+##'   RBL_NUMMER \tab Computer aided dispatch code \cr BEREICH \tab Platform
+##'   area \cr STEIG \tab Name of Platform (internal) \cr STEIG_WGS84_LAT \tab
+##'   Latitude of platform location \cr STEIG_WGS84_LON \tab Longitude of
+##'   platform location \cr STAND \tab Date of data export}
 ##' @param kind a vector specifying the data sets to be downloaded. Defaults to 
 ##'   all available data. See Details.
 ##' @return A named list with (at most) three elements named \code{stations}, 

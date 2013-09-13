@@ -1,6 +1,6 @@
 \name{extractStation}
 \alias{extractStation}
-\title{Extract all Lines serving a Station}
+\title{Extract all lines serving a Station}
 \usage{
   extractStation(ntw, station, ret.l = TRUE, ret.n = TRUE)
 }

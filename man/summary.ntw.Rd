@@ -28,4 +28,8 @@
   This function summarizes a public transit network of
   class \code{ntw}.
 }
+\examples{
+data(vie)
+  summary(vie)
+}
 

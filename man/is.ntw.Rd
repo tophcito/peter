@@ -38,6 +38,12 @@
   \code{\link{getNetwork.vie}} and turns it into a class
   \code{ntw} object.
 }
+\examples{
+\dontrun{
+  vie.lis <- getNetwork.vie()
+  vie <- as.ntw(vie.lis)
+  }
+}
 \author{
   Christoph Waldhauser
 }

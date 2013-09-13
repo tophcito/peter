@@ -70,8 +70,8 @@
   FK_LINIEN_ID \tab Line ID (key) \cr FK_HALTESTELLEN_ID
   \tab Station ID (key) \cr RICHTUNG \tab Direction of
   ordering \cr REIHENFOLGE \tab Ordering withing
-  direction\cr RBL_NUMMER \tab Internal numeric code \cr
-  BEREICH \tab Platform area \cr STEIG \tab Name of
+  direction\cr RBL_NUMMER \tab Computer aided dispatch code
+  \cr BEREICH \tab Platform area \cr STEIG \tab Name of
   Platform (internal) \cr STEIG_WGS84_LAT \tab Latitude of
   platform location \cr STEIG_WGS84_LON \tab Longitude of
   platform location \cr STAND \tab Date of data export}

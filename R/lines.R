@@ -4,15 +4,18 @@
 ##' @param ntw class \code{ntw} public transport network object
 ##' @param line a line specification either by key (as \code{numeric}) or name 
 ##'   (as \code{character})
-##' @param ret.p,ret.s,ret.n if \code{TRUE} return the PlatformID, StationID or 
-##'   station name, respectively.
-##' @return A data frame with (at most) PlatformID, StationID and station name
-##'   for each station served by a line.
+##' @param ret.p,ret.s,ret.r,ret.n,ret.o,ret.d if \code{TRUE} return the PlatformID,
+##'   StationID, RBL code, station name, order and direction respectively.
+##' @return A data frame with (at most) PlatformID, StationID, RBL code,  
+##'   station name, ordering, and direction for each station served by a line.
 ##' @export
-extractLine <- function(ntw, line, ret.p=TRUE, ret.s=TRUE, ret.n=TRUE) {
+##' @examples
+##'   data(vie)
+##'   extractLine(vie, "13A")
+extractLine <- function(ntw, line, ret.p=TRUE, ret.s=TRUE, ret.r, ret.n=TRUE, ret.o=TRUE, ret.d=TRUE) {
   ## extract all stations/platforms related to a certain line
   l.n <- findLine(line, ntw, ret="ID")
-  which <- c("StationID", "PlatformID", "Name.s")[c(ret.s, ret.p, ret.n)]
+  which <- c("StationID", "PlatformID", "Name.s", "Order.p", "Direction")[c(ret.s, ret.p, ret.n, ret.o, ret.d)]
   if (any(c(ret.s, ret.p, ret.n))) res <- ntw[ntw[,"LineID"]==l.n,which]
   return(res)
 }

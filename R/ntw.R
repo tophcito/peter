@@ -28,6 +28,11 @@ is.ntw <- function(x) inherits(x, "ntw")
 ##' @return A class \code{ntw} object.
 ##' @rdname is.ntw
 ##' @export
+##' @examples
+##'   \dontrun{
+##'   vie.lis <- getNetwork.vie()
+##'   vie <- as.ntw(vie.lis)
+##'   }
 as.ntw <- function(ntw, toASCII=FALSE, key=NULL) {
   res <- merge(x=merge(x=ntw$platforms,
                        y=ntw$stations,
@@ -37,14 +42,17 @@ as.ntw <- function(ntw, toASCII=FALSE, key=NULL) {
                y=ntw$lines,
                by.x="FK_LINIEN_ID",
                by.y="LINIEN_ID",
-               suffixes=c(".p", ".l"))[,c(1:5, 9, 10, 14, 15, 16, 17, 18, 20, 21, 22, 23)]
+               suffixes=c(".p", ".l"))[,c(1:6, 9, 10, 14, 15, 16, 17, 18, 20, 21, 22, 23)]
   colnames(res) <- c("LineID", "StationID", "PlatformID", "Direction", 
-                     "Order.p", "Lat.p", "Lon.p", "Name.s", 
+                     "Order.p", "RBL", "Lat.p", "Lon.p", "Name.s", 
                      "City", "CityID", "Lat.s", "Lon.s", 
                      "Name.l", "Order.l", "RT", "Type")
   ## fix faulty values: Station 214754157 Karl-Bednarik-Gasse has wrong GPS coordinates. Removing all points that are too far away from the other ones.
   errs.idx <- res[,"Lat.p"]<40
   res[errs.idx,c("Lon.s", "Lat.s", "Lon.p", "Lat.p")] <- NA
+  rbls <- as.character(res[,"RBL"])
+  rbls[rbls==""] <- NA
+  res[,"RBL"] <- rbls
   name.stations <- as.character(res[,"Name.s"])
   name.cities <- as.character(res[,"City"])
   if (toASCII) {
@@ -53,7 +61,9 @@ as.ntw <- function(ntw, toASCII=FALSE, key=NULL) {
   }
   res[,"Name.s"] <- name.stations
   res[,"City"] <- name.cities
-  attr(res, "key") <- NULL
+#  g <- makeGraph(res)
+  attr(res, "key") <- key
+#  attr(res, "graph") <- g
   class(res) <- c("ntw", "data.frame")
   return(res)
 }
@@ -68,6 +78,9 @@ as.ntw <- function(ntw, toASCII=FALSE, key=NULL) {
 ##'   longitude and latitude and the API key associated with it.
 ##' @S3method summary ntw
 ##' @method summary ntw
+##' @examples
+##'   data(vie)
+##'   summary(vie)
 summary.ntw <- function(object, ...) {
   numLines <- length(unique(object$LineID))
   numStation <- length(unique(object$StationID))
@@ -101,7 +114,7 @@ print.summary.ntw <- function(x, ...) {
   message(paste(c(" ", x$transportTypes), collapse=" "))
   message("Geographical coverage:")
   message(paste("  Longitude: From", x$rng.lon[1], "to", x$rng.lon[2]))
-  message(paste("  Lattitude: From", x$rng.lat[1], "to", x$rng.lat[2]))
+  message(paste("  Latitude: From", x$rng.lat[1], "to", x$rng.lat[2]))
   message(paste("API Key:", x$api.key))
   invisible(x)  
 }
@@ -119,7 +132,9 @@ print.summary.ntw <- function(x, ...) {
 ##' @S3method plot ntw
 ##' @method plot ntw
 plot.ntw <- function(x, y, ..., wrap=TRUE) {
-  pl <- ggplot(data=x, aes(x=Lon.s, y=Lat.s, colour=Type)) + 
+  #NB: use aes_string as advised on stackoverflow
+  #    (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
+  pl <- ggplot(data=x, aes_string(x="Lon.s", y="Lat.s", colour="Type")) + 
     geom_point() + labs(x="Longitude", y="Latitude")
   if (wrap) pl <- pl + facet_wrap(facets=~Type, scales="free")
   print(pl)
@@ -141,6 +156,7 @@ setAPIkey <- function(ntw, key) {
 ##' @rdname setAPIkey
 ##' @return For \code{hasAPIkey}, \code{TRUE} if an API key is defined for a
 ##'   network, \code{FALSE} otherwise.
+##' @export
 hasAPIkey <- function(ntw) {
   return(!is.null(attr(ntw, "key")))
 }
