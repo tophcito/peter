@@ -18,8 +18,9 @@
 ##' }
 makeGraph <- function(ntw, lines) {
   if (missing(lines)) lines <- as.list(unique(as.character(vie[,"Name.l"])))
-  lines <- lapply(lines, extractLine, ntw=ntw)
-  edges <- lapply(lines, function(this.line) {
+  lin <- lapply(lines, extractLine, ntw=ntw)
+  names(lin) <- unlist(lines)
+  edges <- lapply(lin, function(this.line) {
     l.o <- this.line[order(this.line[,"Direction"], this.line[,"Order.p"]),]
     l.os <- split(l.o, l.o["Direction"])
     ed.ll <- lapply(l.os, function(this.l.os){
@@ -38,11 +39,18 @@ makeGraph <- function(ntw, lines) {
     }
     return(res)
   })
-  res <- NULL
+  lineLookup <- NULL
+  for (i in 1:length(lin)) {
+    lineLookup <- rbind(lineLookup, c(nrow(lin[[i]])-2, names(lin)[i]))
+    # nrow(lin[[i]])-2 to remove the last stop in each direction
+  }
+  lN <- unlist(apply(lineLookup, 1, function(x) rep(x[2], times=x[1])))
+  res <- NULL 
   for (i in 1:length(edges)) {
     res <- rbind(res, edges[[i]])
   }
   res <- graph.edgelist(res)
+  E(res)$lineName <- lN
   stat.names <- V(res)$name
   stat.locs <- lapply(as.list(stat.names), function(x) unique(ntw[ntw[,"Name.s"]==x, c("Lon.s", "Lat.s")]))
   res.locs <- NULL
@@ -68,4 +76,34 @@ makeGraph <- function(ntw, lines) {
 addGraph <- function(ntw, gr) {
   attr(ntw, "graph") <- gr
   return(ntw)
+}
+
+##' Weighting a graph with waiting times
+##' 
+##' This function adds edge weights (read waiting times) to the edges in a 
+##' public transit network graph. If no weights are specified at calling time, 
+##' weights are created at random, following a poission distribution with 
+##' \eqn{\lambda = 5}{lambda=5}.
+##' @param ntw,gr a class \code{ntw} public transit network object or an igraph.
+##'   Either one needs to be specified, if both a specified, \code{gr} is 
+##'   ignored.
+##' @param w optional weights to be used on the edges (in the order of edges in
+##'   the igraph).
+##' @export
+##' @examples
+##' data(vie)
+##' vie.w <- setEdgeWeights(vie)  
+setEdgeWeights <- function(ntw, gr, w) {
+  if(missing(ntw) & missing(gr)) stop("Specify either ntw or gr object.")
+  if(!missing(ntw)) gr <- attr(ntw, "graph")
+  if(is.null(gr)) stop("Network has no graph attached. Use addGraph first, 
+                       or specify graph directly.")
+  if(missing(w)) w <- rpois(ecount(gr), lambda=5)
+  E(gr)$weight <- w
+  if(!missing(ntw)) { 
+    res <- addGraph(ntw=ntw, gr=gr)
+  } else {
+    res <- gr
+  }
+  return(res)
 }

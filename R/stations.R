@@ -61,3 +61,33 @@ findRBL <- function(station, line, direction=c("H", "R"), ntw) {
   res <- ntw[ntw[,"StationID"]==station & ntw[,"LineID"]==line & ntw[,"Direction"]==direction, "RBL"]
   return(res)
 }
+
+##' Converting between station names and graphs' vertex IDs
+##' 
+##' These functions take a station name or a vertex ID and convert between the
+##' two.
+##' @param station the station name to look up
+##' @param ntw the class \code{ntw} public transit network object
+##' @return The vertex id as numeric or the station name(s).
+##' @export
+##' @examples
+##' data(vie)
+##' findV("Neubaugasse", vie)
+##' findS(142, vie)
+findV <- function(station, ntw) {
+  g <- attr(ntw, "graph")
+  if (is.null(g)) stop("Network has no graph attached. Use addGraph first.")
+  station <- findStation(station=station, ntw=ntw, ret="Name")
+  v.id <- (1:length(V(g)))[V(g)$name == station]
+  return(v.id)
+}
+
+##' @param vid one or more numeric vertex id(s)
+##' @rdname findV
+##' @export
+findS <- function(vid, ntw) {
+  g <- attr(ntw, "graph")
+  if (is.null(g)) stop("Network has no graph attached. Use addGraph first.")
+  res <- V(g)$name[vid]
+  return(res)
+}
